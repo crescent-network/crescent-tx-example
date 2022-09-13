@@ -9,9 +9,13 @@ This repository is a sample project to demonstrate how to wrap message(s) in a s
 | Go            | 1.18    |
 | Crescent Core | 2.1.1   |
 
+## Configuration
+
+This sample project requires a configuration file called `config.toml`. Copy `example.toml` to create `config.toml` file and change values as you need. The config source code can be found in [this config file](/config/config.go).
+
 ## Usage
 
 ```bash
-# See the code in main.go file for more in detail.
+# See the code in main.go file to understand how this program is developed
 go run main.go
 ```
