@@ -73,9 +73,7 @@ func main() {
 		fees,
 		msgs...,
 	)
-	txConfig := chain.MakeEncodingConfig().TxConfig
-
-	txBytes, err := client.SignTx(tx, txConfig, privKey)
+	txBytes, err := client.SignTx(tx, chain.MakeEncodingConfig().TxConfig, privKey)
 	if err != nil {
 		fmt.Printf("failed to sign transaction: %v", err)
 		return

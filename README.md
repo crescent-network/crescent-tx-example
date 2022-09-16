@@ -1,17 +1,17 @@
 # Crescent Transaction Example
 
-This repository is a sample project to demonstrate how to wrap message(s) in a single transaction. In this example, it wraps `MsgMMOrder` message in a transaction, signs the transaction, and broadcast it to the network.
+This repository is a sample project to demonstrate how to wrap message(s) in a single transaction and sign to broadcast the transaction to the network. In `main.go`, you will see that there are some sample functions to create transactions messages.
 
 ## Dependency
 
 | Dependency    | Version |
 | ------------- | ------- |
 | Go            | 1.18    |
-| Crescent Core | 2.1.1   |
+| Crescent Core | 3.0.x   |
 
 ## Configuration
 
-This sample project requires a configuration file called `config.toml`. Copy `example.toml` to create `config.toml` file and change values as you need. The config source code can be found in [this config file](/config/config.go).
+A configuration file called `config.toml` is required to run the program. Make sure to copy `example.toml` to create `config.toml` file and change values for you need. The config source code can be found in [this config file](/config/config.go).
 
 ## Usage
 
