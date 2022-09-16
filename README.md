@@ -1,6 +1,8 @@
 # Crescent Transaction Example
 
-This repository is a sample project to demonstrate how to wrap message(s) in a single transaction and sign to broadcast the transaction to the network. In `main.go`, you will see that there are some sample functions to create transactions messages.
+This repository is a sample project to demonstrate how to wrap message(s) in a single transaction and signs the transaction to broadcast it the transaction to the network.
+
+In `main.go`, you will find that it demonstrates how to send `MsgMMOrder` for market makers. There are also other sample functions available. Feel free to add/update/delete them depending on your usage.
 
 ## Dependency
 
