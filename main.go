@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 
-	chain "github.com/crescent-network/crescent/v2/app"
-	liquiditytypes "github.com/crescent-network/crescent/v2/x/liquidity/types"
+	chain "github.com/crescent-network/crescent/v3/app"
+	liquiditytypes "github.com/crescent-network/crescent/v3/x/liquidity/types"
 
 	"github.com/crescent-network/crescent-tx-example/client"
 	"github.com/crescent-network/crescent-tx-example/config"

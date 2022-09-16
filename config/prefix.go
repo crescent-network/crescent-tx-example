@@ -3,7 +3,7 @@ package config
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	chain "github.com/crescent-network/crescent/v2/app"
+	chain "github.com/crescent-network/crescent/v3/app"
 )
 
 // SetAddressPrefixes sets chain specific bech32 prefixes.

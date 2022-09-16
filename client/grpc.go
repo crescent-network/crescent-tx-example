@@ -12,7 +12,7 @@ import (
 
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	liquiditytypes "github.com/crescent-network/crescent/v2/x/liquidity/types"
+	liquiditytypes "github.com/crescent-network/crescent/v3/x/liquidity/types"
 )
 
 type GRPCClient struct {
