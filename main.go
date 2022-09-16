@@ -16,31 +16,30 @@ import (
 	"github.com/crescent-network/crescent-tx-example/wallet"
 )
 
-var (
-	timeout = 5 * time.Second
-)
-
 func init() {
 	config := config.SetAddressPrefixes()
 	config.Seal()
 }
 
 func main() {
+	timeout := 5 * time.Second
+
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
+	// Read configuration from the config.toml file
 	config, err := config.Read(config.DefaultConfigPath)
 	if err != nil {
 		panic(fmt.Errorf("failed to read config.toml file: %w", err))
 	}
 
-	// Connect Tendermint RPC client
+	// Connect the Tendermint RPC endpoint
 	rpcClient, err := client.ConnectRPCWithTimeout(config.RPC.Address, timeout)
 	if err != nil {
 		panic(fmt.Errorf("failed to connect RPC client: %w", err))
 	}
 
-	// Connect gRPC client
+	// Connect the gRPC server
 	gRPCConn, err := client.ConnectGRPCWithTimeout(ctx, config.GRPC.Address, config.GRPC.UseTLS, timeout)
 	if err != nil {
 		panic(fmt.Errorf("failed to connect gRPC client: %w", err))
@@ -54,35 +53,17 @@ func main() {
 	}
 
 	chainID, _ := rpcClient.NetworkChainID(ctx)
-	creator := wallet.Address(privKey)
-	baseAccount, _ := gRPCConn.GetAccount(ctx, creator.String())
+	address := wallet.Address(privKey)
+	baseAccount, _ := gRPCConn.GetAccount(ctx, address.String())
 	accNum := baseAccount.GetAccountNumber()
 	accSeq := baseAccount.GetSequence()
 	gasLimit := config.TxConfig.GasLimit
-	fees, err := sdk.ParseCoinsNormalized(config.TxConfig.Fees)
-	if err != nil {
-		panic(fmt.Errorf("failed to parse coins %w", err))
-	}
+	fees, _ := sdk.ParseCoinsNormalized(config.TxConfig.Fees)
 
-	var (
-		baseCoinDenom  = "stake"
-		quoteCoinDenom = "uatom"
-	)
-
-	msg1 := liquiditytypes.MsgCreatePair{
-		Creator:        creator.String(),
-		BaseCoinDenom:  baseCoinDenom,
-		QuoteCoinDenom: quoteCoinDenom,
+	// You can append more messages...
+	msgs := []sdk.Msg{
+		MsgMMOrder(address),
 	}
-	msg2 := liquiditytypes.MsgCreatePool{
-		Creator: creator.String(),
-		PairId:  1,
-		DepositCoins: sdk.NewCoins(
-			sdk.NewInt64Coin(baseCoinDenom, 100_000_000),
-			sdk.NewInt64Coin(quoteCoinDenom, 100_000_000),
-		),
-	}
-	msgs := []sdk.Msg{&msg1, &msg2}
 
 	tx := client.NewTx(
 		chainID,
@@ -92,8 +73,9 @@ func main() {
 		fees,
 		msgs...,
 	)
-	txCfg := chain.MakeEncodingConfig().TxConfig
-	txBytes, err := client.SignTx(tx, txCfg, privKey)
+	txConfig := chain.MakeEncodingConfig().TxConfig
+
+	txBytes, err := client.SignTx(tx, txConfig, privKey)
 	if err != nil {
 		fmt.Printf("failed to sign transaction: %v", err)
 		return
@@ -106,8 +88,8 @@ func main() {
 	}
 
 	// Query to see if the pair and the pool is created
-	// $ crescentd query liquidity pairs -o json | jq
-	// $ crescentd query liquidity pools -o json | jq
+	// $ crescentd query liquidity pairs --node <YOUR_NODE> -o json | jq
+	// $ crescentd query liquidity pools --node <YOUR_NODE> -o json | jq
 	fmt.Println("Sent transaction successfully!")
 	fmt.Println("TxHash: ", resp.TxResponse.TxHash)
 
@@ -116,4 +98,57 @@ func main() {
 	// See the implemented queries in client/grpc.go file
 	// ...
 	//
+}
+
+// Example of MMOrder Message
+//
+// MsgMMOrder create a transaction message to make market making order (MMOrder).
+// An MMOrder is a group of multiple buy/sell limit orders which are
+// distributed evenly based on its parameters.
+func MsgMMOrder(addr sdk.AccAddress) sdk.Msg {
+	// the order lifespan; it is the duration that the order lives until it is expired.
+	// even if you have 0 for order life span, an order requires at least one batch to be executed
+	// and maximum order life span is 24 hours for performance reason.
+	var orderLifeSpan = 30 * time.Second
+
+	// Adjust the following values for your needs
+	msg := liquiditytypes.MsgMMOrder{
+		Orderer:       addr.String(),
+		PairId:        1,                            // the pair id that you would like to target
+		MaxSellPrice:  sdk.MustNewDecFromStr("102"), // the maximum sell price
+		MinSellPrice:  sdk.MustNewDecFromStr("101"), // the minimum sell price
+		SellAmount:    sdk.NewInt(1000000),          // the total amount of base coin of sell orders
+		MaxBuyPrice:   sdk.MustNewDecFromStr("100"), // the maximum buy price
+		MinBuyPrice:   sdk.MustNewDecFromStr("99"),  // the minimum buy price
+		BuyAmount:     sdk.NewInt(1000000),          // the total amount of base coin of buy orders
+		OrderLifespan: orderLifeSpan,
+	}
+	return &msg
+}
+
+// Example of CreatePool Message
+//
+// MsgCreatePool creates a transaction message to create new pool.
+func MsgCreatePool(addr sdk.AccAddress) sdk.Msg {
+	msg := liquiditytypes.MsgCreatePool{
+		Creator: addr.String(),
+		PairId:  1,
+		DepositCoins: sdk.NewCoins(
+			sdk.NewInt64Coin("uusd", 100_000_000),
+			sdk.NewInt64Coin("uatom", 100_000_000),
+		),
+	}
+	return &msg
+}
+
+// Example of CreatePair Message
+//
+// MsgCreatePair creates a transaction message to create new pair.
+func MsgCreatePair(addr sdk.AccAddress) sdk.Msg {
+	msg := liquiditytypes.MsgCreatePair{
+		Creator:        addr.String(),
+		BaseCoinDenom:  "uusd",
+		QuoteCoinDenom: "uatom",
+	}
+	return &msg
 }
