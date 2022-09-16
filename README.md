@@ -1,6 +1,6 @@
 # Crescent Transaction Example
 
-This repository is a sample project to demonstrate how to wrap message(s) in a single transaction.
+This repository is a sample project to demonstrate how to wrap message(s) in a single transaction. In this example, it wraps `MsgMMOrder` message in a transaction, signs the transaction, and broadcast it to the network.
 
 ## Dependency
 
