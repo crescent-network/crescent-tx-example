@@ -88,8 +88,7 @@ func main() {
 	// Query to see if the pair and the pool is created
 	// $ crescentd query liquidity pairs --node <YOUR_NODE> -o json | jq
 	// $ crescentd query liquidity pools --node <YOUR_NODE> -o json | jq
-	fmt.Println("Sent transaction successfully!")
-	fmt.Println("TxHash: ", resp.TxResponse.TxHash)
+	fmt.Println("TxResponse: ", resp.TxResponse)
 
 	//
 	// You can use gRPCConn to query pair(s) and pool(s)
@@ -110,15 +109,18 @@ func MsgMMOrder(addr sdk.AccAddress) sdk.Msg {
 	var orderLifeSpan = 30 * time.Second
 
 	// Adjust the following values for your needs
+	//
+	// 1. Query your targeting pair information by using either CLI or API; e.g: $ crescentd q liquidity pairs <pair-id>
+	// 2. Reference the "last_price" and fill in MaxSellPrice, MinSellPrice, MaxBuyPrice, MinBuyPrice
 	msg := liquiditytypes.MsgMMOrder{
 		Orderer:       addr.String(),
-		PairId:        1,                            // the pair id that you would like to target
-		MaxSellPrice:  sdk.MustNewDecFromStr("102"), // the maximum sell price
-		MinSellPrice:  sdk.MustNewDecFromStr("101"), // the minimum sell price
-		SellAmount:    sdk.NewInt(1000000),          // the total amount of base coin of sell orders
-		MaxBuyPrice:   sdk.MustNewDecFromStr("100"), // the maximum buy price
-		MinBuyPrice:   sdk.MustNewDecFromStr("99"),  // the minimum buy price
-		BuyAmount:     sdk.NewInt(1000000),          // the total amount of base coin of buy orders
+		PairId:        2,                             // the pair id that you would like to target
+		MaxSellPrice:  sdk.MustNewDecFromStr("1.90"), // the maximum sell price
+		MinSellPrice:  sdk.MustNewDecFromStr("1.89"), // the minimum sell price
+		SellAmount:    sdk.NewInt(1000000),           // the total amount of base coin of sell orders
+		MaxBuyPrice:   sdk.MustNewDecFromStr("1.80"), // the maximum buy price
+		MinBuyPrice:   sdk.MustNewDecFromStr("1.79"), // the minimum buy price
+		BuyAmount:     sdk.NewInt(1000000),           // the total amount of base coin of buy orders
 		OrderLifespan: orderLifeSpan,
 	}
 	return &msg
