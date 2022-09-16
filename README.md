@@ -19,3 +19,7 @@ This sample project requires a configuration file called `config.toml`. Copy `ex
 # See the code in main.go file to understand how this program is developed
 go run main.go
 ```
+
+## Resources
+
+- [Network Configurations for Crescent Mainnet and Testnet(s)](https://docs.crescent.network/other-information/network-configurations)

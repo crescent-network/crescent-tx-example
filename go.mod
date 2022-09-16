@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/cosmos/cosmos-sdk v0.45.3
 	github.com/cosmos/go-bip39 v1.0.0
-	github.com/crescent-network/crescent/v2 v2.1.1
+	github.com/crescent-network/crescent/v3 v3.0.0-rc1
 	github.com/pelletier/go-toml v1.9.4
 	github.com/rs/zerolog v1.23.0
 	github.com/tendermint/tendermint v0.34.19
@@ -123,7 +123,7 @@ require (
 
 replace (
 	github.com/cosmos/cosmos-sdk => github.com/crescent-network/cosmos-sdk v1.1.0-sdk-0.45.3
-	github.com/cosmos/ibc-go/v2 => github.com/crescent-network/ibc-go/v2 v2.2.0-crescent
+	github.com/cosmos/ibc-go/v2 => github.com/crescent-network/ibc-go/v2 v2.2.0-crescent-v3
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
 )

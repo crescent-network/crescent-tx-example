@@ -6,7 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/pelletier/go-toml"
-	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -61,8 +60,6 @@ func Read(configPath string) (*Config, error) {
 		configPath = DefaultConfigPath
 	}
 
-	log.Debug().Msg("reading config file...")
-
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		return nil, err
@@ -74,8 +71,6 @@ func Read(configPath string) (*Config, error) {
 // ParseString attempts to read and parse  config from the given string bytes.
 // An error reading or parsing the config results in a panic.
 func ParseString(configData []byte) (*Config, error) {
-	log.Debug().Msg("parsing config data...")
-
 	var cfg Config
 	err := toml.Unmarshal(configData, &cfg)
 	if err != nil {
