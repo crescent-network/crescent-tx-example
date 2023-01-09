@@ -3,7 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
@@ -21,6 +25,8 @@ var (
 )
 
 func init() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr}) // human-friendly output
+
 	config := config.SetAddressPrefixes()
 	config.Seal()
 }
@@ -93,6 +99,6 @@ func main() {
 		return
 	}
 
-	fmt.Println("Go to the following link to see if transaction is successfully included in a block")
-	fmt.Printf("http://localhost:1317/cosmos/tx/v1beta1/txs/%s\n ", resp.TxResponse.TxHash)
+	log.Info().Msg("Go to the following link to see if transaction is successfully included in a block")
+	log.Info().Msg("http://localhost:1317/cosmos/tx/v1beta1/txs/" + resp.TxResponse.TxHash)
 }
