@@ -7,9 +7,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	chain "github.com/crescent-network/crescent/v2/app"
-	liquiditytypes "github.com/crescent-network/crescent/v2/x/liquidity/types"
+	chain "github.com/crescent-network/crescent/v4/app"
 
 	"github.com/crescent-network/crescent-tx-example/client"
 	"github.com/crescent-network/crescent-tx-example/config"
@@ -64,25 +64,13 @@ func main() {
 		panic(fmt.Errorf("failed to parse coins %w", err))
 	}
 
-	var (
-		baseCoinDenom  = "stake"
-		quoteCoinDenom = "uatom"
-	)
-
-	msg1 := liquiditytypes.MsgCreatePair{
-		Creator:        creator.String(),
-		BaseCoinDenom:  baseCoinDenom,
-		QuoteCoinDenom: quoteCoinDenom,
+	// Create new MsgSend for test
+	msg := banktypes.MsgSend{
+		FromAddress: creator.String(),
+		ToAddress:   "cre15rz2rwnlgr7nf6eauz52usezffwrxc0mxajpmw",
+		Amount:      sdk.NewCoins(sdk.NewInt64Coin("uatom", 100)),
 	}
-	msg2 := liquiditytypes.MsgCreatePool{
-		Creator: creator.String(),
-		PairId:  1,
-		DepositCoins: sdk.NewCoins(
-			sdk.NewInt64Coin(baseCoinDenom, 100_000_000),
-			sdk.NewInt64Coin(quoteCoinDenom, 100_000_000),
-		),
-	}
-	msgs := []sdk.Msg{&msg1, &msg2}
+	msgs := []sdk.Msg{&msg}
 
 	tx := client.NewTx(
 		chainID,
@@ -105,15 +93,6 @@ func main() {
 		return
 	}
 
-	// Query to see if the pair and the pool is created
-	// $ crescentd query liquidity pairs -o json | jq
-	// $ crescentd query liquidity pools -o json | jq
-	fmt.Println("Sent transaction successfully!")
-	fmt.Println("TxHash: ", resp.TxResponse.TxHash)
-
-	//
-	// You can use gRPCConn to query pair(s) and pool(s)
-	// See the implemented queries in client/grpc.go file
-	// ...
-	//
+	fmt.Println("Go to the following link to see if transaction is successfully included in a block")
+	fmt.Printf("http://localhost:1317/cosmos/tx/v1beta1/txs/%s\n ", resp.TxResponse.TxHash)
 }

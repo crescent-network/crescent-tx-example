@@ -7,6 +7,8 @@ import (
 
 	rpc "github.com/tendermint/tendermint/rpc/client/http"
 	tmctypes "github.com/tendermint/tendermint/rpc/core/types"
+
+	"github.com/rs/zerolog/log"
 )
 
 type RPCClient struct {
@@ -15,6 +17,8 @@ type RPCClient struct {
 
 // ConnectRPCWithTimeout connects RPC client connection with timeout.
 func ConnectRPCWithTimeout(addr string, timeout time.Duration) (*RPCClient, error) {
+	log.Info().Msg("connecting RPC client...")
+
 	rpcClient, err := rpc.NewWithTimeout(addr, "/websocket", uint(timeout.Seconds()))
 	if err != nil {
 		return nil, err

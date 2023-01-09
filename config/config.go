@@ -36,14 +36,14 @@ type GRPCConfig struct {
 
 // WalletConfig contains wallet configuration that is used to sign transaction.
 type WalletConfig struct {
-	Mnemonic string `yaml:"mnemonic"`
-	Password string `yaml:"password"`
+	Mnemonic string `toml:"mnemonic"`
+	Password string `toml:"password"`
 }
 
 // TxConfig contains configuration for transaction related parameters.
 type TxConfig struct {
-	GasLimit uint64 `yaml:"gas_limit"`
-	Fees     string `yaml:"fees"`
+	GasLimit uint64 `toml:"gas_limit"`
+	Fees     string `toml:"fees"`
 }
 
 // NewConfig builds a new Config instance.
@@ -61,7 +61,7 @@ func Read(configPath string) (*Config, error) {
 		configPath = DefaultConfigPath
 	}
 
-	log.Debug().Msg("reading config file...")
+	log.Info().Msg("reading config file...")
 
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
@@ -74,7 +74,7 @@ func Read(configPath string) (*Config, error) {
 // ParseString attempts to read and parse  config from the given string bytes.
 // An error reading or parsing the config results in a panic.
 func ParseString(configData []byte) (*Config, error) {
-	log.Debug().Msg("parsing config data...")
+	log.Info().Msg("parsing config data...")
 
 	var cfg Config
 	err := toml.Unmarshal(configData, &cfg)

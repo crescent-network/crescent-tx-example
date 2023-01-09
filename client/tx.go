@@ -39,6 +39,7 @@ func SignTx(tx *Tx, txCfg sdkclient.TxConfig, privKey *secp256k1.PrivKey) ([]byt
 	b.SetFeeAmount(tx.Fees)
 
 	mode := txCfg.SignModeHandler().DefaultMode()
+
 	sig := signing.SignatureV2{
 		PubKey: privKey.PubKey(),
 		Data: &signing.SingleSignatureData{
@@ -49,21 +50,26 @@ func SignTx(tx *Tx, txCfg sdkclient.TxConfig, privKey *secp256k1.PrivKey) ([]byt
 	if err := b.SetSignatures(sig); err != nil {
 		return nil, fmt.Errorf("set signatures: %w", err)
 	}
+
 	data := authsigning.SignerData{
 		ChainID:       tx.ChainID,
 		AccountNumber: tx.AccNum,
 		Sequence:      tx.AccSeq,
 	}
+
 	sig, err := clienttx.SignWithPrivKey(mode, data, b, privKey, txCfg, tx.AccSeq)
 	if err != nil {
 		return nil, fmt.Errorf("sign with priv key: %w", err)
 	}
+
 	if err := b.SetSignatures(sig); err != nil {
 		return nil, fmt.Errorf("set signatures: %w", err)
 	}
+
 	txBytes, err := txCfg.TxEncoder()(b.GetTx())
 	if err != nil {
 		return nil, fmt.Errorf("encode tx: %w", err)
 	}
+
 	return txBytes, nil
 }

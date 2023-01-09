@@ -12,7 +12,9 @@ import (
 
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	liquiditytypes "github.com/crescent-network/crescent/v2/x/liquidity/types"
+	liquiditytypes "github.com/crescent-network/crescent/v4/x/liquidity/types"
+
+	"github.com/rs/zerolog/log"
 )
 
 type GRPCClient struct {
@@ -20,6 +22,8 @@ type GRPCClient struct {
 }
 
 func ConnectGRPC(ctx context.Context, addr string, useTLS bool, opts ...grpc.DialOption) (*GRPCClient, error) {
+	log.Info().Msg("connecting gRPC client...")
+
 	if !useTLS {
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	} else {
